@@ -1,0 +1,19 @@
+{
+  "app_name": "BAROM ME",
+  "attendance": "Attendance",
+  "leaves": "Leaves",
+  "approvals": "Approvals",
+  "settings": "Settings",
+  "sign_in": "Sign In",
+  "sign_out": "Sign Out",
+  "email": "Email",
+  "password": "Password",
+  "login_failed": "Login failed",
+  "check_in": "Check In",
+  "check_out": "Check Out",
+  "pending": "Pending",
+  "approved": "Approved",
+  "rejected": "Rejected",
+  "cancelled": "Cancelled",
+  "in_review": "In Review"
+}

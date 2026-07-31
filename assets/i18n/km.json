@@ -1,0 +1,19 @@
+{
+  "app_name": "បារ៉ម មី",
+  "attendance": "វត្តមាន",
+  "leaves": "ច្បាប់",
+  "approvals": "ការអនុម័ត",
+  "settings": "ការកំណត់",
+  "sign_in": "ចូល",
+  "sign_out": "ចាកចេញ",
+  "email": "អ៊ីមែល",
+  "password": "ពាក្យសម្ងាត់",
+  "login_failed": "ការចូលបរាជ័យ",
+  "check_in": "ចុះឈ្មោះចូល",
+  "check_out": "ចុះឈ្មោះចេញ",
+  "pending": "កំពុងរង់ចាំ",
+  "approved": "បានអនុម័ត",
+  "rejected": "បានបដិសេធ",
+  "cancelled": "បានលុបចោល",
+  "in_review": "កំពុងពិនិត្យ"
+}
