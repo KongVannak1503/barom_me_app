@@ -5,7 +5,7 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = barom_me_app
+PRODUCT_NAME = BAROM.ME
 
 // The application's bundle identifier
 PRODUCT_BUNDLE_IDENTIFIER = com.barom.baromMeApp

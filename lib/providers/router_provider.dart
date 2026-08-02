@@ -7,6 +7,7 @@ import '../screens/leaves/my_leaves_screen.dart';
 import '../screens/approvals/my_approvals_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/settings/telegram_connect_screen.dart';
+import '../screens/settings/set_pin_screen.dart';
 import '../widgets/common/app_shell.dart';
 import '../services/api_constants.dart';
 
@@ -57,6 +58,10 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'telegram',
                 builder: (_, __) => const TelegramConnectScreen(),
+              ),
+              GoRoute(
+                path: 'app-lock',
+                builder: (_, __) => const SetPinScreen(),
               ),
             ],
           ),

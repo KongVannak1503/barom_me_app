@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/leave_type.dart';
 import '../../providers/leave_provider.dart';
 import '../../themes/app_colors.dart';
@@ -56,20 +57,21 @@ class _CreateLeaveScreenState extends ConsumerState<CreateLeaveScreen> {
   }
 
   Future<void> _submit() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_selectedType == null) {
-      _showError('Please select a leave type');
+      _showError(l10n.pleaseSelectLeaveType);
       return;
     }
     if (_startDate == null) {
-      _showError('Please select start date');
+      _showError(l10n.pleaseSelectStartDate);
       return;
     }
     if (_endDate == null) {
-      _showError('Please select end date');
+      _showError(l10n.pleaseSelectEndDate);
       return;
     }
     if (_reasonController.text.trim().isEmpty) {
-      _showError('Please enter a reason');
+      _showError(l10n.pleaseEnterReason);
       return;
     }
 
@@ -88,7 +90,7 @@ class _CreateLeaveScreenState extends ConsumerState<CreateLeaveScreen> {
       );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Leave request submitted successfully')),
+          SnackBar(content: Text(l10n.leaveRequestSubmitted)),
         );
         Navigator.of(context).pop();
       }
@@ -110,21 +112,22 @@ class _CreateLeaveScreenState extends ConsumerState<CreateLeaveScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(leaveProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('New Leave Request')),
+      appBar: AppBar(title: Text(l10n.newLeaveRequest)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionLabel('Leave Type *'),
+            _buildSectionLabel(l10n.leaveTypeRequired),
             const SizedBox(height: 8),
             DropdownButtonFormField<LeaveType>(
               initialValue: _selectedType,
               isExpanded: true,
               decoration: _inputDecoration(),
-              hint: const Text('Select leave type'),
+              hint: Text(l10n.selectLeaveType),
               items: state.leaveTypes.map((type) {
                 return DropdownMenuItem(
                   value: type,
@@ -147,13 +150,13 @@ class _CreateLeaveScreenState extends ConsumerState<CreateLeaveScreen> {
               onChanged: (val) => setState(() => _selectedType = val),
             ),
             const SizedBox(height: 20),
-            _buildSectionLabel('Date Range *'),
+            _buildSectionLabel(l10n.dateRangeRequired),
             const SizedBox(height: 8),
             Row(
               children: [
                 Expanded(
                   child: _dateField(
-                    label: 'Start Date',
+                    label: l10n.startDate,
                     date: _startDate,
                     onTap: () => _pickDate(isStart: true),
                   ),
@@ -164,7 +167,7 @@ class _CreateLeaveScreenState extends ConsumerState<CreateLeaveScreen> {
                 ),
                 Expanded(
                   child: _dateField(
-                    label: 'End Date',
+                    label: l10n.endDate,
                     date: _endDate,
                     onTap: () => _pickDate(isStart: false),
                   ),
@@ -183,33 +186,33 @@ class _CreateLeaveScreenState extends ConsumerState<CreateLeaveScreen> {
                   }),
                 ),
                 const SizedBox(width: 8),
-                const Text('Half Day', style: TextStyle(fontSize: 14)),
+                Text(l10n.halfDay, style: const TextStyle(fontSize: 14)),
               ],
             ),
             if (_halfDay) ...[
               const SizedBox(height: 8),
               Row(
                 children: [
-                  _sessionChip('Morning', Icons.wb_sunny),
+                  _sessionChip('morning', l10n.morning, Icons.wb_sunny),
                   const SizedBox(width: 12),
-                  _sessionChip('Afternoon', Icons.nights_stay),
+                  _sessionChip('afternoon', l10n.afternoon, Icons.nights_stay),
                 ],
               ),
             ],
             const SizedBox(height: 20),
-            _buildSectionLabel('Reason *'),
+            _buildSectionLabel(l10n.reasonRequired),
             const SizedBox(height: 8),
             TextFormField(
               controller: _reasonController,
               maxLines: 3,
-              decoration: _inputDecoration(hint: 'Enter reason for leave'),
+              decoration: _inputDecoration(hint: l10n.enterReasonForLeave),
             ),
             const SizedBox(height: 20),
-            _buildSectionLabel('Contact During Leave'),
+            _buildSectionLabel(l10n.contactDuringLeave),
             const SizedBox(height: 8),
             TextFormField(
               controller: _contactController,
-              decoration: _inputDecoration(hint: 'Phone number or email (optional)'),
+              decoration: _inputDecoration(hint: l10n.phoneOrEmailOptional),
               keyboardType: TextInputType.phone,
             ),
             const SizedBox(height: 32),
@@ -225,7 +228,7 @@ class _CreateLeaveScreenState extends ConsumerState<CreateLeaveScreen> {
                 ),
                 child: _isSubmitting
                     ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : const Text('Submit Request', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    : Text(l10n.submitRequest, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               ),
             ),
           ],
@@ -274,7 +277,7 @@ class _CreateLeaveScreenState extends ConsumerState<CreateLeaveScreen> {
                 Icon(Icons.calendar_today, size: 14, color: date != null ? AppColors.textPrimary : AppColors.textHint),
                 const SizedBox(width: 6),
                 Text(
-                  date != null ? _formatDate(date) : 'Select',
+                  date != null ? _formatDate(date) : AppLocalizations.of(context)!.select,
                   style: TextStyle(
                     fontSize: 14,
                     color: date != null ? AppColors.textPrimary : AppColors.textHint,
@@ -288,10 +291,10 @@ class _CreateLeaveScreenState extends ConsumerState<CreateLeaveScreen> {
     );
   }
 
-  Widget _sessionChip(String label, IconData icon) {
-    final selected = _halfDaySession == label.toLowerCase();
+  Widget _sessionChip(String value, String label, IconData icon) {
+    final selected = _halfDaySession == value;
     return GestureDetector(
-      onTap: () => setState(() => _halfDaySession = label.toLowerCase()),
+      onTap: () => setState(() => _halfDaySession = value),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(

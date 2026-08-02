@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../services/barom_api.dart';
 import '../../services/api_constants.dart';
 import '../../themes/app_colors.dart';
+import '../../providers/session_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 final _isLoadingProvider = StateProvider<bool>((ref) => false);
 final _obscurePasswordProvider = StateProvider<bool>((ref) => true);
@@ -31,6 +33,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final isLoading = ref.watch(_isLoadingProvider);
     final obscure = ref.watch(_obscurePasswordProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SafeArea(
@@ -43,7 +46,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const Icon(Icons.fingerprint, size: 80, color: AppColors.primary),
                 const SizedBox(height: 16),
                 Text(
-                  'BAROM ME',
+                  l10n.appName,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.primary,
@@ -51,7 +54,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Sign in to your account',
+                  l10n.signInToAccount,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: AppColors.textSecondary,
                   ),
@@ -59,9 +62,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: 48),
                 TextField(
                   controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    prefixIcon: Icon(Icons.email_outlined),
+                  decoration: InputDecoration(
+                    labelText: l10n.email,
+                    prefixIcon: const Icon(Icons.email_outlined),
                   ),
                   keyboardType: TextInputType.emailAddress,
                 ),
@@ -69,7 +72,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 TextField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: 'Password',
+                    labelText: l10n.password,
                     prefixIcon: const Icon(Icons.lock_outlined),
                     suffixIcon: IconButton(
                       icon: Icon(obscure ? Icons.visibility_off : Icons.visibility),
@@ -90,7 +93,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             width: 20,
                             child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                           )
-                        : const Text('Sign In'),
+                        : Text(l10n.signIn),
                   ),
                 ),
               ],
@@ -104,10 +107,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> _login(BuildContext context) async {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
+    final l10n = AppLocalizations.of(context)!;
 
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter email and password')),
+        SnackBar(content: Text(l10n.pleaseEnterEmailAndPassword)),
       );
       return;
     }
@@ -126,6 +130,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (refreshToken != null) {
         await api.storage.write(key: ApiConstants.refreshTokenKey, value: refreshToken);
       }
+      setSession(ref, true);
       if (context.mounted) context.go('/attendance');
     } on DioException catch (e) {
       final msg = e.response?.data is Map
@@ -133,13 +138,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           : e.toString();
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Login failed: $msg')),
+          SnackBar(content: Text('${l10n.loginFailed}: $msg')),
         );
       }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Login failed: ${e.toString()}')),
+          SnackBar(content: Text('${l10n.loginFailed}: ${e.toString()}')),
         );
       }
     } finally {

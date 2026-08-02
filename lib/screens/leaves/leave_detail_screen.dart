@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/leave_request.dart';
 import '../../providers/leave_provider.dart';
 import '../../themes/app_colors.dart';
 import '../../utils/date_formatter.dart';
+import '../../utils/status_localizer.dart';
 
 class LeaveDetailScreen extends ConsumerWidget {
   final LeaveRequest leaveRequest;
@@ -14,23 +16,25 @@ class LeaveDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(leaveProvider);
     final isSubmitting = state.isSubmitting;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Leave Details')),
+      appBar: AppBar(title: Text(l10n.leaveDetails)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           _buildHeader(context, ref, isSubmitting),
           const SizedBox(height: 20),
-          _buildInfoSection(),
+          _buildInfoSection(l10n),
           const SizedBox(height: 20),
-          _buildDetailRow('Leave Type', leaveRequest.leaveType?.name ?? '-'),
-          _buildDetailRow('Date Range', leaveRequest.dateRangeDisplay),
+          _buildDetailRow(l10n.leaveType, leaveRequest.leaveType?.name ?? '-'),
+          _buildDetailRow(l10n.dateRange, leaveRequest.dateRangeDisplay),
           if (leaveRequest.halfDay)
-            _buildDetailRow('Half Day', leaveRequest.halfDaySession == 'morning' ? 'Morning' : 'Afternoon'),
-          _buildDetailRow('Status', leaveRequest.statusDisplay),
+            _buildDetailRow(l10n.halfDay,
+                leaveRequest.halfDaySession == 'morning' ? l10n.morning : l10n.afternoon),
+          _buildDetailRow(l10n.status, statusLabel(l10n, leaveRequest.statusDisplay)),
           const SizedBox(height: 16),
-          const Text('Reason', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: AppColors.textPrimary)),
+          Text(l10n.reason, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: AppColors.textPrimary)),
           const SizedBox(height: 6),
           Container(
             width: double.infinity,
@@ -46,11 +50,11 @@ class LeaveDetailScreen extends ConsumerWidget {
           ),
           if (leaveRequest.contactDuringLeave != null && leaveRequest.contactDuringLeave!.isNotEmpty) ...[
             const SizedBox(height: 16),
-            _buildDetailRow('Contact', leaveRequest.contactDuringLeave!),
+            _buildDetailRow(l10n.contact, leaveRequest.contactDuringLeave!),
           ],
           if (leaveRequest.adminRemark != null && leaveRequest.adminRemark!.isNotEmpty) ...[
             const SizedBox(height: 16),
-            const Text('Admin Remark', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: AppColors.textPrimary)),
+            Text(l10n.adminRemark, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: AppColors.textPrimary)),
             const SizedBox(height: 6),
             Container(
               width: double.infinity,
@@ -72,6 +76,7 @@ class LeaveDetailScreen extends ConsumerWidget {
   }
 
   Widget _buildHeader(BuildContext context, WidgetRef ref, bool isSubmitting) {
+    final l10n = AppLocalizations.of(context)!;
     final color = _statusColor(leaveRequest.status);
     return Container(
       padding: const EdgeInsets.all(20),
@@ -92,7 +97,7 @@ class LeaveDetailScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            leaveRequest.leaveType?.name ?? 'Leave Request',
+            leaveRequest.leaveType?.name ?? l10n.leaveRequest,
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
           ),
           const SizedBox(height: 6),
@@ -103,7 +108,7 @@ class LeaveDetailScreen extends ConsumerWidget {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
-              leaveRequest.statusDisplay,
+              statusLabel(l10n, leaveRequest.statusDisplay),
               style: TextStyle(color: color, fontWeight: FontWeight.w600, fontSize: 13),
             ),
           ),
@@ -118,11 +123,11 @@ class LeaveDetailScreen extends ConsumerWidget {
                         final confirm = await showDialog<bool>(
                           context: context,
                           builder: (ctx) => AlertDialog(
-                            title: const Text('Cancel Leave'),
-                            content: const Text('Are you sure?'),
+                            title: Text(l10n.cancelLeave),
+                            content: Text(l10n.areYouSure),
                             actions: [
-                              TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('No')),
-                              TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Yes')),
+                              TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.no)),
+                              TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(l10n.yes)),
                             ],
                           ),
                         );
@@ -131,21 +136,21 @@ class LeaveDetailScreen extends ConsumerWidget {
                             await ref.read(leaveProvider.notifier).cancelLeaveRequest(leaveRequest.id);
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Leave cancelled')),
+                                SnackBar(content: Text(l10n.leaveCancelled)),
                               );
                               Navigator.of(context).pop();
                             }
                           } catch (e) {
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Failed: $e')),
+                                SnackBar(content: Text('${l10n.failedToCancel}: $e')),
                               );
                             }
                           }
                         }
                       },
                 icon: const Icon(Icons.cancel, size: 18),
-                label: const Text('Cancel This Request'),
+                label: Text(l10n.cancelThisRequest),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.danger,
                   side: const BorderSide(color: AppColors.danger),
@@ -159,7 +164,7 @@ class LeaveDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildInfoSection() {
+  Widget _buildInfoSection(AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -170,20 +175,20 @@ class LeaveDetailScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Details', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppColors.textPrimary)),
+          Text(l10n.details, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppColors.textPrimary)),
           const SizedBox(height: 16),
-          _buildInfoRow(Icons.calendar_today, 'Submitted', _formatDateTime(leaveRequest.createdAt)),
-          ..._buildExtraInfo(),
+          _buildInfoRow(Icons.calendar_today, l10n.submitted, _formatDateTime(leaveRequest.createdAt)),
+          ..._buildExtraInfo(l10n),
         ],
       ),
     );
   }
 
-  List<Widget> _buildExtraInfo() {
+  List<Widget> _buildExtraInfo(AppLocalizations l10n) {
     final rows = <Widget>[];
     if (leaveRequest.attachment != null) {
       rows.add(const SizedBox(height: 12));
-      rows.add(_buildInfoRow(Icons.attach_file, 'Attachment', leaveRequest.attachment!, isLink: true));
+      rows.add(_buildInfoRow(Icons.attach_file, l10n.attachment, leaveRequest.attachment!, isLink: true));
     }
     return rows;
   }

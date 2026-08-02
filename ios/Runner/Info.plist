@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Barom Me App</string>
+	<string>BAROM.ME</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>barom_me_app</string>
+	<string>BAROM.ME</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -51,5 +51,7 @@
 	<string>Barom Me needs your location to track attendance check-ins even when the app is in the background.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Barom Me needs your location to track attendance check-ins and verify your presence at the work location.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Unlock BAROM.ME with Face ID.</string>
 </dict>
 </plist>

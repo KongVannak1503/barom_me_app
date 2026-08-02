@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/leave_request.dart';
 import '../../providers/leave_provider.dart';
 import '../../themes/app_colors.dart';
+import '../../utils/status_localizer.dart';
 import 'create_leave_screen.dart';
 import 'leave_detail_screen.dart';
 
@@ -39,14 +41,20 @@ class _MyLeavesScreenState extends ConsumerState<MyLeavesScreen> {
   }
 
   Future<void> _cancelLeave(LeaveRequest leave) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Cancel Leave'),
-        content: Text('Are you sure you want to cancel ${leave.leaveType?.name ?? 'leave'} request?'),
+        title: Text(l10n.cancelLeave),
+        content: Text(l10n.areYouSureCancelLeave(
+          leave.leaveType?.name ?? l10n.leaveRequest,
+        )),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('No')),
-          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Yes, Cancel')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.no)),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.yesCancel),
+          ),
         ],
       ),
     );
@@ -55,13 +63,13 @@ class _MyLeavesScreenState extends ConsumerState<MyLeavesScreen> {
         await ref.read(leaveProvider.notifier).cancelLeaveRequest(leave.id);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Leave request cancelled')),
+            SnackBar(content: Text(l10n.leaveRequestCancelled)),
           );
         }
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to cancel: $e')),
+            SnackBar(content: Text('${l10n.failedToCancel}: $e')),
           );
         }
       }
@@ -71,10 +79,11 @@ class _MyLeavesScreenState extends ConsumerState<MyLeavesScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(leaveProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Leaves'),
+        title: Text(l10n.myLeaves),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -94,6 +103,7 @@ class _MyLeavesScreenState extends ConsumerState<MyLeavesScreen> {
   }
 
   Widget _buildBody(LeaveState state) {
+    final l10n = AppLocalizations.of(context)!;
     if (state.isLoading && state.leaves.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -107,7 +117,7 @@ class _MyLeavesScreenState extends ConsumerState<MyLeavesScreen> {
             const SizedBox(height: 16),
             Text(state.error!, style: const TextStyle(color: AppColors.textSecondary)),
             const SizedBox(height: 16),
-            ElevatedButton(onPressed: _refresh, child: const Text('Retry')),
+            ElevatedButton(onPressed: _refresh, child: Text(l10n.retry)),
           ],
         ),
       );
@@ -119,16 +129,18 @@ class _MyLeavesScreenState extends ConsumerState<MyLeavesScreen> {
         _buildStatsRow(state.stats),
         const SizedBox(height: 20),
         if (state.leaves.isEmpty)
-          const Center(
+          Center(
             child: Padding(
-              padding: EdgeInsets.only(top: 48),
+              padding: const EdgeInsets.only(top: 48),
               child: Column(
                 children: [
-                  Icon(Icons.beach_access, size: 64, color: AppColors.textHint),
-                  SizedBox(height: 16),
-                  Text('No leave requests yet', style: TextStyle(color: AppColors.textSecondary)),
-                  SizedBox(height: 8),
-                  Text('Tap + to create one', style: TextStyle(color: AppColors.textHint, fontSize: 12)),
+                  const Icon(Icons.beach_access, size: 64, color: AppColors.textHint),
+                  const SizedBox(height: 16),
+                  Text(l10n.noLeaveRequestsYet,
+                      style: const TextStyle(color: AppColors.textSecondary)),
+                  const SizedBox(height: 8),
+                  Text(l10n.tapPlusToCreateOne,
+                      style: const TextStyle(color: AppColors.textHint, fontSize: 12)),
                 ],
               ),
             ),
@@ -145,6 +157,7 @@ class _MyLeavesScreenState extends ConsumerState<MyLeavesScreen> {
   }
 
   Widget _buildStatsRow(Map<String, dynamic> stats) {
+    final l10n = AppLocalizations.of(context)!;
     final pending = stats['total_pending'] as int? ?? 0;
     final approved = stats['total_approved_this_month'] as int? ?? 0;
 
@@ -155,7 +168,7 @@ class _MyLeavesScreenState extends ConsumerState<MyLeavesScreen> {
             icon: Icons.hourglass_empty,
             iconColor: AppColors.warning,
             iconBgColor: AppColors.warning.withValues(alpha: 0.1),
-            label: 'Pending',
+            label: l10n.pending,
             value: pending.toString(),
           ),
         ),
@@ -165,7 +178,7 @@ class _MyLeavesScreenState extends ConsumerState<MyLeavesScreen> {
             icon: Icons.check_circle,
             iconColor: AppColors.success,
             iconBgColor: AppColors.success.withValues(alpha: 0.1),
-            label: 'Approved',
+            label: l10n.approved,
             value: approved.toString(),
           ),
         ),
@@ -213,6 +226,7 @@ class _MyLeavesScreenState extends ConsumerState<MyLeavesScreen> {
 
   Widget _buildLeaveCard(LeaveRequest leave, LeaveState state) {
     final color = _statusColor(leave.status);
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
       elevation: 0,
@@ -250,7 +264,7 @@ class _MyLeavesScreenState extends ConsumerState<MyLeavesScreen> {
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
-                      leave.statusDisplay,
+                      statusLabel(l10n, leave.statusDisplay),
                       style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -282,7 +296,7 @@ class _MyLeavesScreenState extends ConsumerState<MyLeavesScreen> {
                     child: TextButton.icon(
                       onPressed: state.isSubmitting ? null : () => _cancelLeave(leave),
                       icon: const Icon(Icons.cancel, size: 16),
-                      label: const Text('Cancel', style: TextStyle(fontSize: 12)),
+                      label: Text(l10n.cancel, style: const TextStyle(fontSize: 12)),
                       style: TextButton.styleFrom(foregroundColor: AppColors.danger, padding: const EdgeInsets.symmetric(horizontal: 10)),
                     ),
                   ),

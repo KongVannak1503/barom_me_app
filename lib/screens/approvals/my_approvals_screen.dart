@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../l10n/app_localizations.dart';
 import '../../themes/app_colors.dart';
 
 class MyApprovalsScreen extends ConsumerWidget {
@@ -7,15 +8,16 @@ class MyApprovalsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('My Approvals')),
-      body: const Center(
+      appBar: AppBar(title: Text(l10n.myApprovals)),
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.how_to_reg, size: 64, color: AppColors.textHint),
-            SizedBox(height: 16),
-            Text('Approvals coming soon', style: TextStyle(color: AppColors.textSecondary)),
+            const Icon(Icons.how_to_reg, size: 64, color: AppColors.textHint),
+            const SizedBox(height: 16),
+            Text(l10n.approvalsComingSoon, style: const TextStyle(color: AppColors.textSecondary)),
           ],
         ),
       ),

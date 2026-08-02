@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/attendance_provider.dart';
 import '../../themes/app_colors.dart';
 import '../../utils/session_helper.dart';
@@ -52,7 +53,7 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to get location: $e')),
+          SnackBar(content: Text('${AppLocalizations.of(context)!.failedToGetLocation}: $e')),
         );
       }
     }
@@ -86,10 +87,11 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
 
     final isSessionIn = record?.isSessionCheckedIn(_selectedSession) ?? false;
     final isSessionOut = record?.isSessionCheckedOut(_selectedSession) ?? false;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Attendance'),
+        title: Text(l10n.myAttendance),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -137,9 +139,9 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
                   style: const TextStyle(color: AppColors.danger, fontSize: 12),
                 ),
               ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
-              child: Text('Today\'s Location', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+              child: Text(l10n.todaysLocation, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -149,9 +151,9 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
                 userLongitude: record?.checkInLongitude,
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
-              child: Text('History', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+              child: Text(l10n.history, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
             ),
             historyAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
