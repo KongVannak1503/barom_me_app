@@ -64,6 +64,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lightMode => 'Light mode';
 
   @override
+  String get darkMode => 'Dark mode';
+
+  @override
+  String get systemTheme => 'System default';
+
+  @override
+  String get attendanceTemplate => 'Attendance screen template';
+
+  @override
+  String get classicTemplate => 'Classic';
+
+  @override
+  String get punchFirstTemplate => 'Check-in first';
+
+  @override
+  String get compactTemplate => 'Compact';
+
+  @override
+  String get sessionsTemplate => 'Sessions list';
+
+  @override
+  String get complete => 'Complete';
+
+  @override
+  String get working => 'Working';
+
+  @override
+  String get notYet => 'Not yet';
+
+  @override
   String get signOut => 'Sign Out';
 
   @override

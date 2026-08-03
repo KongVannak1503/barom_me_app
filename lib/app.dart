@@ -6,6 +6,7 @@ import 'providers/app_lock_provider.dart';
 import 'providers/locale_provider.dart';
 import 'providers/router_provider.dart';
 import 'providers/session_provider.dart';
+import 'providers/theme_provider.dart';
 import 'screens/lock/app_lock_screen.dart';
 import 'themes/app_theme.dart';
 
@@ -31,11 +32,14 @@ class _BaromMeAppState extends ConsumerState<BaromMeApp> {
     final appLock = ref.watch(appLockProvider);
     final session = ref.watch(sessionProvider);
     final locale = ref.watch(localeProvider);
+    final themeMode = ref.watch(themeProvider);
 
     return MaterialApp.router(
       title: 'BAROM.ME',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: themeMode,
       locale: locale,
       supportedLocales: const [Locale('en'), Locale('km')],
       localizationsDelegates: const [

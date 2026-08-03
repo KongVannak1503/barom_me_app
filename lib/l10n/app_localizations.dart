@@ -206,6 +206,66 @@ abstract class AppLocalizations {
   /// **'Light mode'**
   String get lightMode;
 
+  /// No description provided for @darkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark mode'**
+  String get darkMode;
+
+  /// No description provided for @systemTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'System default'**
+  String get systemTheme;
+
+  /// No description provided for @attendanceTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Attendance screen template'**
+  String get attendanceTemplate;
+
+  /// No description provided for @classicTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic'**
+  String get classicTemplate;
+
+  /// No description provided for @punchFirstTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in first'**
+  String get punchFirstTemplate;
+
+  /// No description provided for @compactTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Compact'**
+  String get compactTemplate;
+
+  /// No description provided for @sessionsTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions list'**
+  String get sessionsTemplate;
+
+  /// No description provided for @complete.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete'**
+  String get complete;
+
+  /// No description provided for @working.
+  ///
+  /// In en, this message translates to:
+  /// **'Working'**
+  String get working;
+
+  /// No description provided for @notYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet'**
+  String get notYet;
+
   /// No description provided for @signOut.
   ///
   /// In en, this message translates to:

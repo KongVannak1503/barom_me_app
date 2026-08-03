@@ -3,9 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:io' show Platform;
 import '../../l10n/app_localizations.dart';
+import '../../models/attendance_screen_template.dart';
 import '../../providers/app_lock_provider.dart';
+import '../../providers/attendance_template_provider.dart';
 import '../../providers/locale_provider.dart';
 import '../../providers/session_provider.dart';
+import '../../providers/theme_provider.dart';
 import '../../services/app_lock_service.dart';
 import '../../services/barom_api.dart';
 import '../../themes/app_colors.dart';
@@ -30,6 +33,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final appLock = ref.watch(appLockProvider).valueOrNull;
     final locale = ref.watch(localeProvider);
+    final themeMode = ref.watch(themeProvider);
+    final template = ref.watch(attendanceTemplateProvider);
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -124,9 +129,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             child: ListTile(
               leading: const Icon(Icons.palette, color: AppColors.primary),
               title: Text(l10n.theme),
-              subtitle: Text(l10n.lightMode),
+              subtitle: Text(_themeModeLabel(themeMode, l10n)),
               trailing: const Icon(Icons.chevron_right),
-              onTap: () {},
+              onTap: () => _showThemePicker(context),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.view_agenda, color: AppColors.primary),
+              title: Text(l10n.attendanceTemplate),
+              subtitle: Text(_templateLabel(template, l10n)),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => _showTemplatePicker(context),
             ),
           ),
           const SizedBox(height: 24),
@@ -185,6 +200,146 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
     if (selected != null) {
       await ref.read(localeProvider.notifier).setLocale(selected);
+    }
+  }
+
+  Future<void> _showThemePicker(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final current = ref.read(themeProvider);
+    final selected = await showDialog<ThemeMode>(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: Text(l10n.theme),
+        children: [
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(context, ThemeMode.system),
+            child: Row(
+              children: [
+                Icon(current == ThemeMode.system
+                    ? Icons.radio_button_checked
+                    : Icons.radio_button_off),
+                const SizedBox(width: 12),
+                Text(l10n.systemTheme),
+              ],
+            ),
+          ),
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(context, ThemeMode.light),
+            child: Row(
+              children: [
+                Icon(current == ThemeMode.light
+                    ? Icons.radio_button_checked
+                    : Icons.radio_button_off),
+                const SizedBox(width: 12),
+                Text(l10n.lightMode),
+              ],
+            ),
+          ),
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(context, ThemeMode.dark),
+            child: Row(
+              children: [
+                Icon(current == ThemeMode.dark
+                    ? Icons.radio_button_checked
+                    : Icons.radio_button_off),
+                const SizedBox(width: 12),
+                Text(l10n.darkMode),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+    if (selected != null) {
+      await ref.read(themeProvider.notifier).setThemeMode(selected);
+    }
+  }
+
+  String _themeModeLabel(ThemeMode mode, AppLocalizations l10n) {
+    switch (mode) {
+      case ThemeMode.light:
+        return l10n.lightMode;
+      case ThemeMode.dark:
+        return l10n.darkMode;
+      case ThemeMode.system:
+        return l10n.systemTheme;
+    }
+  }
+
+  Future<void> _showTemplatePicker(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final current = ref.read(attendanceTemplateProvider);
+    final selected = await showDialog<AttendanceScreenTemplate>(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: Text(l10n.attendanceTemplate),
+        children: [
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(context, AttendanceScreenTemplate.classic),
+            child: Row(
+              children: [
+                Icon(current == AttendanceScreenTemplate.classic
+                    ? Icons.radio_button_checked
+                    : Icons.radio_button_off),
+                const SizedBox(width: 12),
+                Text(l10n.classicTemplate),
+              ],
+            ),
+          ),
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(context, AttendanceScreenTemplate.punchFirst),
+            child: Row(
+              children: [
+                Icon(current == AttendanceScreenTemplate.punchFirst
+                    ? Icons.radio_button_checked
+                    : Icons.radio_button_off),
+                const SizedBox(width: 12),
+                Text(l10n.punchFirstTemplate),
+              ],
+            ),
+          ),
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(context, AttendanceScreenTemplate.compact),
+            child: Row(
+              children: [
+                Icon(current == AttendanceScreenTemplate.compact
+                    ? Icons.radio_button_checked
+                    : Icons.radio_button_off),
+                const SizedBox(width: 12),
+                Text(l10n.compactTemplate),
+              ],
+            ),
+          ),
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(context, AttendanceScreenTemplate.sessions),
+            child: Row(
+              children: [
+                Icon(current == AttendanceScreenTemplate.sessions
+                    ? Icons.radio_button_checked
+                    : Icons.radio_button_off),
+                const SizedBox(width: 12),
+                Text(l10n.sessionsTemplate),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+    if (selected != null) {
+      await ref.read(attendanceTemplateProvider.notifier).setTemplate(selected);
+    }
+  }
+
+  String _templateLabel(AttendanceScreenTemplate template, AppLocalizations l10n) {
+    switch (template) {
+      case AttendanceScreenTemplate.classic:
+        return l10n.classicTemplate;
+      case AttendanceScreenTemplate.punchFirst:
+        return l10n.punchFirstTemplate;
+      case AttendanceScreenTemplate.compact:
+        return l10n.compactTemplate;
+      case AttendanceScreenTemplate.sessions:
+        return l10n.sessionsTemplate;
     }
   }
 

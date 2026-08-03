@@ -64,6 +64,36 @@ class AppLocalizationsKm extends AppLocalizations {
   String get lightMode => 'របៀបពន្លឺ';
 
   @override
+  String get darkMode => 'របៀបងងឹត';
+
+  @override
+  String get systemTheme => 'តាមប្រព័ន្ធ';
+
+  @override
+  String get attendanceTemplate => 'ប្លង់អេក្រង់វត្តមាន';
+
+  @override
+  String get classicTemplate => 'បុរាណ';
+
+  @override
+  String get punchFirstTemplate => 'ចុចចូលមុន';
+
+  @override
+  String get compactTemplate => 'បង្រួម';
+
+  @override
+  String get sessionsTemplate => 'បញ្ជីវេន';
+
+  @override
+  String get complete => 'បានបញ្ចប់';
+
+  @override
+  String get working => 'កំពុងធ្វើ';
+
+  @override
+  String get notYet => 'មិនទាន់';
+
+  @override
   String get signOut => 'ចាកចេញ';
 
   @override

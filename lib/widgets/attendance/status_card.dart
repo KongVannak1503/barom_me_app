@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/attendance_record.dart';
 import '../../themes/app_colors.dart';
 import '../../utils/date_formatter.dart';
@@ -7,12 +8,22 @@ import '../../utils/session_helper.dart';
 class StatusCard extends StatelessWidget {
   final AttendanceRecord? record;
   final List<AttendanceSession> sessions;
+  final bool compact;
 
-  const StatusCard({super.key, this.record, required this.sessions});
+  const StatusCard({
+    super.key,
+    this.record,
+    required this.sessions,
+    this.compact = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
+
+    if (compact) {
+      return _buildCompact(context, now);
+    }
 
     return Card(
       margin: const EdgeInsets.all(16),
@@ -52,9 +63,41 @@ class StatusCard extends StatelessWidget {
     );
   }
 
+  Widget _buildCompact(BuildContext context, DateTime now) {
+    final doneCount = sessions.where((s) =>
+        record?.isSessionCheckedOut(s) == true).length;
+    final total = sessions.length;
+
+    return Card(
+      margin: const EdgeInsets.all(16),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                DateFormatter.formatDisplay(now),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            Text(
+              '$doneCount/$total ${record?.shift != null ? '· ${record!.shift!.displayName}' : ''}',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+            ),
+            const SizedBox(width: 12),
+            _buildOverallStatus(context, sessions),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildOverallStatus(BuildContext context, List<AttendanceSession> sessions) {
+    final l10n = AppLocalizations.of(context)!;
     if (record == null) {
-      return _badge('Not yet', AppColors.warning);
+      return _badge(l10n.notYet, AppColors.warning);
     }
 
     final anyActive = sessions.any((s) =>
@@ -62,11 +105,11 @@ class StatusCard extends StatelessWidget {
     final allDone = sessions.every((s) =>
         !record!.isSessionCheckedIn(s) || record!.isSessionCheckedOut(s));
 
-    if (anyActive) return _badge('Working', AppColors.success);
+    if (anyActive) return _badge(l10n.working, AppColors.success);
     if (allDone && sessions.any((s) => record!.isSessionCheckedIn(s))) {
-      return _badge('Completed', AppColors.textSecondary);
+      return _badge(l10n.complete, AppColors.textSecondary);
     }
-    return _badge('Not yet', AppColors.warning);
+    return _badge(l10n.notYet, AppColors.warning);
   }
 
   Widget _badge(String text, Color color) {
