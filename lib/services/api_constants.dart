@@ -21,7 +21,7 @@ class ApiConstants {
   static String get baseUrl {
     switch (_flavor) {
       case ApiFlavor.dev:
-        return 'http://$_devHost:8000/api';
+        return 'http://$_devHost:8001/api';
       case ApiFlavor.stage:
         return 'https://staging-api.barom.me/api';
       case ApiFlavor.production:
@@ -32,7 +32,7 @@ class ApiConstants {
   static String get storageBaseUrl {
     switch (_flavor) {
       case ApiFlavor.dev:
-        return 'http://$_devHost:8000/storage';
+        return 'http://$_devHost:8001/storage';
       case ApiFlavor.stage:
         return 'https://staging-api.barom.me/storage';
       case ApiFlavor.production:

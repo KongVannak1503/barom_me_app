@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/attendance_record.dart';
+import '../models/employee.dart';
 import '../models/paginated_response.dart';
 import '../models/shift.dart';
 import '../repositories/attendance_repository.dart';
@@ -15,6 +16,7 @@ class AttendanceStatusState {
   final bool initialLoading;
   final String? error;
   final AttendanceRecord? todayRecord;
+  final Employee? employee;
   final bool isClockingIn;
   final Shift? rosterShift;
 
@@ -23,6 +25,7 @@ class AttendanceStatusState {
     this.initialLoading = true,
     this.error,
     this.todayRecord,
+    this.employee,
     this.isClockingIn = false,
     this.rosterShift,
   });
@@ -34,6 +37,7 @@ class AttendanceStatusState {
     bool? initialLoading,
     String? error,
     AttendanceRecord? todayRecord,
+    Employee? employee,
     bool? isClockingIn,
     Shift? rosterShift,
     bool clearError = false,
@@ -43,6 +47,7 @@ class AttendanceStatusState {
       initialLoading: initialLoading ?? this.initialLoading,
       error: clearError ? null : error ?? this.error,
       todayRecord: todayRecord ?? this.todayRecord,
+      employee: employee ?? this.employee,
       isClockingIn: isClockingIn ?? this.isClockingIn,
       rosterShift: rosterShift ?? this.rosterShift,
     );
@@ -63,6 +68,7 @@ class AttendanceStatusNotifier extends StateNotifier<AttendanceStatusState> {
           isLoading: false,
           initialLoading: false,
           todayRecord: result.todayAttendance,
+          employee: result.employee,
           rosterShift: result.rosterShift,
         );
         return;

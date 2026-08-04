@@ -10,6 +10,7 @@ import '../../utils/session_helper.dart';
 import '../../widgets/attendance/attendance_map.dart';
 import '../../widgets/attendance/clock_button.dart';
 import '../../widgets/attendance/history_list.dart';
+import '../../widgets/attendance/profile_header_card.dart';
 import '../../widgets/attendance/session_punch_list.dart';
 import '../../widgets/attendance/session_selector.dart';
 import '../../widgets/attendance/status_card.dart';
@@ -206,10 +207,16 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
       ],
     );
 
+    final profileWidget = ProfileHeaderCard(
+      employee: statusState.employee,
+      loading: statusState.initialLoading,
+    );
+
     final List<Widget> blocks;
     switch (template) {
       case AttendanceScreenTemplate.sessions:
         blocks = [
+          profileWidget,
           SessionPunchList(
             record: record,
             sessions: sessions,
@@ -223,6 +230,7 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
         ];
       case AttendanceScreenTemplate.punchFirst:
         blocks = [
+          profileWidget,
           clockWidget,
           errorWidget,
           statusWidget,
@@ -233,6 +241,7 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
       case AttendanceScreenTemplate.compact:
       case AttendanceScreenTemplate.classic:
         blocks = [
+          profileWidget,
           statusWidget,
           sessionWidget,
           clockWidget,
