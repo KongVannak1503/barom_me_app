@@ -21,11 +21,11 @@ class ApiConstants {
   static String get baseUrl {
     switch (_flavor) {
       case ApiFlavor.dev:
-        return 'http://$_devHost:8001/api';
+        return 'http://$_devHost:8001/api/v1';
       case ApiFlavor.stage:
-        return 'https://staging-api.barom.me/api';
+        return 'https://staging-api.barom.me/api/v1';
       case ApiFlavor.production:
-        return 'https://barom.me/api';
+        return 'https://barom.me/api/v1';
     }
   }
 
