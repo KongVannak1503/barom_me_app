@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../models/attendance_record.dart';
-import '../../models/paginated_response.dart';
+import '../../providers/attendance_provider.dart';
 import '../../themes/app_colors.dart';
 import '../../utils/date_formatter.dart';
 
 class HistoryList extends StatelessWidget {
-  final PaginatedResponse<AttendanceRecord>? history;
+  final AttendanceHistoryState? history;
   final bool isLoading;
   final VoidCallback? onLoadMore;
   final String? error;
@@ -31,7 +31,9 @@ class HistoryList extends StatelessWidget {
       return const Center(child: CircularProgressIndicator());
     }
 
-    final items = history?.data ?? [];
+    final items = history?.items ?? [];
+    final hasMore = history?.hasMore ?? false;
+    final isLoadingMore = history?.isLoadingMore ?? false;
 
     if (items.isEmpty) {
       return const Padding(
@@ -45,17 +47,23 @@ class HistoryList extends StatelessWidget {
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: items.length + (history?.hasMore == true ? 1 : 0),
+      itemCount: items.length + (hasMore ? 1 : 0),
       separatorBuilder: (_, __) => const Divider(height: 1),
       itemBuilder: (context, index) {
         if (index >= items.length) {
           return Padding(
             padding: const EdgeInsets.all(12),
             child: Center(
-              child: TextButton(
-                onPressed: onLoadMore,
-                child: const Text('Load more'),
-              ),
+              child: isLoadingMore
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : TextButton(
+                      onPressed: onLoadMore,
+                      child: const Text('Load more'),
+                    ),
             ),
           );
         }
@@ -85,7 +93,7 @@ class HistoryList extends StatelessWidget {
         ),
       ),
       title: Text(
-        DateFormatter.formatDisplay(DateTime.parse(record.date)),
+        DateFormatter.formatDisplayFromIso(record.date),
         style: const TextStyle(fontWeight: FontWeight.w500),
       ),
       subtitle: Text(

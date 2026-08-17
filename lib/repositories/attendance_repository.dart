@@ -43,10 +43,11 @@ class AttendanceRepository {
     );
   }
 
-  Future<PaginatedResponse<AttendanceRecord>> getHistory({int page = 1, int perPage = 20}) async {
+  Future<PaginatedResponse<AttendanceRecord>> getHistory({int page = 1, int perPage = 10, String? date}) async {
     final response = await _api.dio.get('/my-attendance/history', queryParameters: {
       'page': page,
       'per_page': perPage,
+      if (date != null) 'date': date,
     });
     return PaginatedResponse.fromJson(
       response.data as Map<String, dynamic>,

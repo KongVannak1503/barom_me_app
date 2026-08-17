@@ -9,7 +9,6 @@
   "loginFailed": "Login failed",
   "attendance": "Attendance",
   "leaves": "Leaves",
-  "approvals": "Approvals",
   "settings": "Settings",
   "language": "Language",
   "english": "English",
@@ -83,6 +82,8 @@
   "myAttendance": "My Attendance",
   "todaysLocation": "Today's Location",
   "history": "History",
+  "allDates": "All dates",
+  "clear": "Clear",
   "failedToGetLocation": "Failed to get location",
   "myLeaves": "My Leaves",
   "noLeaveRequestsYet": "No leave requests yet",
@@ -132,7 +133,5 @@
   "adminRemark": "Admin Remark",
   "areYouSure": "Are you sure?",
   "cancelThisRequest": "Cancel This Request",
-  "leaveCancelled": "Leave cancelled",
-  "myApprovals": "My Approvals",
-  "approvalsComingSoon": "Approvals coming soon"
+  "leaveCancelled": "Leave cancelled"
 }

@@ -6,6 +6,7 @@ import '../../models/attendance_screen_template.dart';
 import '../../providers/attendance_provider.dart';
 import '../../providers/attendance_template_provider.dart';
 import '../../themes/app_colors.dart';
+import '../../utils/date_formatter.dart';
 import '../../utils/session_helper.dart';
 import '../../widgets/attendance/attendance_map.dart';
 import '../../widgets/attendance/clock_button.dart';
@@ -23,7 +24,6 @@ class MyAttendanceScreen extends ConsumerStatefulWidget {
 }
 
 class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
-  int _historyPage = 1;
   late AttendanceSession _selectedSession;
   bool _isSyncing = false;
   int _mapKey = 0;
@@ -42,9 +42,7 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
     try {
       _refreshLocation();
       await ref.read(attendanceStatusProvider.notifier).refresh();
-
-      ref.invalidate(attendanceHistoryProvider(_historyPage));
-      await ref.read(attendanceHistoryProvider(_historyPage).future);
+      await ref.read(attendanceHistoryProvider.notifier).refresh();
     } finally {
       if (mounted) setState(() => _isSyncing = false);
     }
@@ -82,7 +80,7 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
         punchType: punchType,
       );
       if (mounted) {
-        ref.invalidate(attendanceHistoryProvider(_historyPage));
+        await ref.read(attendanceHistoryProvider.notifier).refresh();
       }
     } catch (e) {
       if (mounted) {
@@ -93,10 +91,52 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
     }
   }
 
+  Widget _buildDateFilter() {
+    final l10n = AppLocalizations.of(context)!;
+    final selectedDate = ref.watch(attendanceHistoryProvider).valueOrNull?.selectedDate;
+    return InputDecorator(
+      decoration: InputDecoration(
+        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        prefixIcon: const Icon(Icons.calendar_today, size: 16),
+        suffixIcon: selectedDate != null
+            ? IconButton(
+                icon: const Icon(Icons.clear, size: 16),
+                onPressed: () => ref.read(attendanceHistoryProvider.notifier).setDate(null),
+              )
+            : null,
+      ),
+      child: GestureDetector(
+        onTap: () => _pickHistoryDate(),
+        child: Text(
+          selectedDate != null ? DateFormatter.format(selectedDate) : l10n.allDates,
+          style: TextStyle(
+            fontSize: 13,
+            color: selectedDate != null ? AppColors.textPrimary : AppColors.textSecondary,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickHistoryDate() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: ref.watch(attendanceHistoryProvider).valueOrNull?.selectedDate ?? now,
+      firstDate: now.subtract(const Duration(days: 365 * 5)),
+      lastDate: now,
+    );
+    if (picked != null) {
+      await ref.read(attendanceHistoryProvider.notifier).setDate(picked);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final statusState = ref.watch(attendanceStatusProvider);
-    final historyAsync = ref.watch(attendanceHistoryProvider(_historyPage));
+    final historyAsync = ref.watch(attendanceHistoryProvider);
     final template = ref.watch(attendanceTemplateProvider);
     final record = statusState.todayRecord;
     final shift = statusState.effectiveShift;
@@ -185,17 +225,20 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
-          child: Text(l10n.history, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+          child: Row(
+            children: [
+              Text(l10n.history, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+              const SizedBox(width: 12),
+              Expanded(child: _buildDateFilter()),
+            ],
+          ),
         ),
         historyAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (err, _) => HistoryList(error: err.toString()),
-          data: (history) => HistoryList(
-            history: history,
-            onLoadMore: () {
-              setState(() => _historyPage++);
-              ref.invalidate(attendanceHistoryProvider(_historyPage));
-            },
+          data: (state) => HistoryList(
+            history: state,
+            onLoadMore: () => ref.read(attendanceHistoryProvider.notifier).loadMore(),
           ),
         ),
         if (statusState.isLoading)

@@ -152,12 +152,6 @@ abstract class AppLocalizations {
   /// **'Leaves'**
   String get leaves;
 
-  /// No description provided for @approvals.
-  ///
-  /// In en, this message translates to:
-  /// **'Approvals'**
-  String get approvals;
-
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
@@ -596,6 +590,18 @@ abstract class AppLocalizations {
   /// **'History'**
   String get history;
 
+  /// No description provided for @allDates.
+  ///
+  /// In en, this message translates to:
+  /// **'All dates'**
+  String get allDates;
+
+  /// No description provided for @clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clear;
+
   /// No description provided for @failedToGetLocation.
   ///
   /// In en, this message translates to:
@@ -895,18 +901,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Leave cancelled'**
   String get leaveCancelled;
-
-  /// No description provided for @myApprovals.
-  ///
-  /// In en, this message translates to:
-  /// **'My Approvals'**
-  String get myApprovals;
-
-  /// No description provided for @approvalsComingSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Approvals coming soon'**
-  String get approvalsComingSoon;
 }
 
 class _AppLocalizationsDelegate

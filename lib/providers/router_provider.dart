@@ -4,7 +4,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/attendance/my_attendance_screen.dart';
 import '../screens/leaves/my_leaves_screen.dart';
-import '../screens/approvals/my_approvals_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/settings/telegram_connect_screen.dart';
 import '../screens/settings/set_pin_screen.dart';
@@ -41,12 +40,6 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/leaves',
             pageBuilder: (_, __) => const NoTransitionPage(
               child: MyLeavesScreen(),
-            ),
-          ),
-          GoRoute(
-            path: '/approvals',
-            pageBuilder: (_, __) => const NoTransitionPage(
-              child: MyApprovalsScreen(),
             ),
           ),
           GoRoute(

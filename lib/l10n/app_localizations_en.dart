@@ -36,9 +36,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get leaves => 'Leaves';
 
   @override
-  String get approvals => 'Approvals';
-
-  @override
   String get settings => 'Settings';
 
   @override
@@ -270,6 +267,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get history => 'History';
 
   @override
+  String get allDates => 'All dates';
+
+  @override
+  String get clear => 'Clear';
+
+  @override
   String get failedToGetLocation => 'Failed to get location';
 
   @override
@@ -420,10 +423,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get leaveCancelled => 'Leave cancelled';
-
-  @override
-  String get myApprovals => 'My Approvals';
-
-  @override
-  String get approvalsComingSoon => 'Approvals coming soon';
 }

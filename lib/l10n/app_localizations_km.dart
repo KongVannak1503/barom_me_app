@@ -36,9 +36,6 @@ class AppLocalizationsKm extends AppLocalizations {
   String get leaves => 'ច្បាប់';
 
   @override
-  String get approvals => 'ការអនុម័ត';
-
-  @override
   String get settings => 'ការកំណត់';
 
   @override
@@ -275,6 +272,12 @@ class AppLocalizationsKm extends AppLocalizations {
   String get history => 'ប្រវត្តិ';
 
   @override
+  String get allDates => 'កាលបរិច្ឆេទទាំងអស់';
+
+  @override
+  String get clear => 'ជម្រះ';
+
+  @override
   String get failedToGetLocation => 'មិនអាចទទួលបានទីតាំង';
 
   @override
@@ -425,10 +428,4 @@ class AppLocalizationsKm extends AppLocalizations {
 
   @override
   String get leaveCancelled => 'ច្បាប់ត្រូវបានបោះបង់';
-
-  @override
-  String get myApprovals => 'ការអនុម័តរបស់ខ្ញុំ';
-
-  @override
-  String get approvalsComingSoon => 'ការអនុម័តនឹងមកដល់ក្នុងពេលឆាប់ៗ';
 }

@@ -9,7 +9,6 @@
   "loginFailed": "ការចូលបរាជ័យ",
   "attendance": "វត្តមាន",
   "leaves": "ច្បាប់",
-  "approvals": "ការអនុម័ត",
   "settings": "ការកំណត់",
   "language": "ភាសា",
   "english": "អង់គ្លេស",
@@ -83,6 +82,8 @@
   "myAttendance": "វត្តមានរបស់ខ្ញុំ",
   "todaysLocation": "ទីតាំងថ្ងៃនេះ",
   "history": "ប្រវត្តិ",
+  "allDates": "កាលបរិច្ឆេទទាំងអស់",
+  "clear": "ជម្រះ",
   "failedToGetLocation": "មិនអាចទទួលបានទីតាំង",
   "myLeaves": "ច្បាប់របស់ខ្ញុំ",
   "noLeaveRequestsYet": "មិនទាន់មានសំណើច្បាប់នៅឡើយទេ",
@@ -132,7 +133,5 @@
   "adminRemark": "កំណត់សម្គាល់អ្នកគ្រប់គ្រង",
   "areYouSure": "តើអ្នកប្រាកដទេ?",
   "cancelThisRequest": "បោះបង់សំណើនេះ",
-  "leaveCancelled": "ច្បាប់ត្រូវបានបោះបង់",
-  "myApprovals": "ការអនុម័តរបស់ខ្ញុំ",
-  "approvalsComingSoon": "ការអនុម័តនឹងមកដល់ក្នុងពេលឆាប់ៗ"
+  "leaveCancelled": "ច្បាប់ត្រូវបានបោះបង់"
 }
