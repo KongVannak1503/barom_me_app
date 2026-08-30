@@ -7,6 +7,7 @@ import 'providers/locale_provider.dart';
 import 'providers/router_provider.dart';
 import 'providers/session_provider.dart';
 import 'providers/theme_provider.dart';
+import 'providers/translations_provider.dart';
 import 'screens/lock/app_lock_screen.dart';
 import 'themes/app_theme.dart';
 
@@ -33,6 +34,8 @@ class _BaromMeAppState extends ConsumerState<BaromMeApp> {
     final session = ref.watch(sessionProvider);
     final locale = ref.watch(localeProvider);
     final themeMode = ref.watch(themeProvider);
+    // Keep dynamic translations in sync with the active locale at app level.
+    ref.watch(translationsProvider);
 
     return MaterialApp.router(
       title: 'BAROM.ME',

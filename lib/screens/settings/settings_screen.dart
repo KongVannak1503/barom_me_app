@@ -11,6 +11,7 @@ import '../../providers/session_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../services/app_lock_service.dart';
 import '../../services/barom_api.dart';
+import '../../extensions/translations_extension.dart';
 import '../../themes/app_colors.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -38,14 +39,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.settings)),
+      appBar: AppBar(title: Text(context.tr('settings', l10n.settings))),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           Card(
             child: ListTile(
               leading: const Icon(Icons.language, color: AppColors.primary),
-              title: Text(l10n.language),
+              title: Text(context.tr('language', l10n.language)),
               subtitle: Text(locale.languageCode == 'km'
                   ? l10n.khmer
                   : l10n.english),
@@ -57,8 +58,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           Card(
             child: ListTile(
               leading: const Icon(Icons.telegram, color: AppColors.primary),
-              title: Text(l10n.telegram),
-              subtitle: Text(l10n.connectTelegramForNotifications),
+              title: Text(context.tr('telegram', l10n.telegram)),
+              subtitle: Text(context.tr('connect_telegram_for_notifications', l10n.connectTelegramForNotifications)),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.go('/settings/telegram'),
             ),
