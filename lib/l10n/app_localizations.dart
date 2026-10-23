@@ -901,6 +901,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Leave cancelled'**
   String get leaveCancelled;
+
+  /// No description provided for @outsideWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Outside Work'**
+  String get outsideWork;
+
+  /// No description provided for @myOutsideWork.
+  ///
+  /// In en, this message translates to:
+  /// **'My Outside Work'**
+  String get myOutsideWork;
+
+  /// No description provided for @newOutsideWorkRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'New Outside Work Request'**
+  String get newOutsideWorkRequest;
+
+  /// No description provided for @noOutsideWorkRequestsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No outside work requests yet'**
+  String get noOutsideWorkRequestsYet;
+
+  /// No description provided for @cancelOutsideWorkRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Outside Work Request'**
+  String get cancelOutsideWorkRequest;
+
+  /// No description provided for @areYouSureCancelOutsideWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to cancel the outside work request for {dates}?'**
+  String areYouSureCancelOutsideWork(Object dates);
+
+  /// No description provided for @outsideWorkRequestCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Outside work request cancelled'**
+  String get outsideWorkRequestCancelled;
+
+  /// No description provided for @outsideWorkAutoApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved automatically'**
+  String get outsideWorkAutoApproved;
+
+  /// No description provided for @outsideWorkSubmittedForApproval.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted for approval'**
+  String get outsideWorkSubmittedForApproval;
+
+  /// No description provided for @outsideWorkAllowedUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Outside work allowed until {date}'**
+  String outsideWorkAllowedUntil(Object date);
+
+  /// No description provided for @requestOutsideWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Request outside work'**
+  String get requestOutsideWork;
+
+  /// No description provided for @endDateOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'End date (optional)'**
+  String get endDateOptional;
+
+  /// No description provided for @enterReasonForOutsideWork.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. client visit, field work'**
+  String get enterReasonForOutsideWork;
+
+  /// No description provided for @outsideWorkHint.
+  ///
+  /// In en, this message translates to:
+  /// **'While approved, you can clock in and out outside your branch location.'**
+  String get outsideWorkHint;
 }
 
 class _AppLocalizationsDelegate

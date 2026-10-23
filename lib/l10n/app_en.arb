@@ -133,5 +133,19 @@
   "adminRemark": "Admin Remark",
   "areYouSure": "Are you sure?",
   "cancelThisRequest": "Cancel This Request",
-  "leaveCancelled": "Leave cancelled"
+  "leaveCancelled": "Leave cancelled",
+  "outsideWork": "Outside Work",
+  "myOutsideWork": "My Outside Work",
+  "newOutsideWorkRequest": "New Outside Work Request",
+  "noOutsideWorkRequestsYet": "No outside work requests yet",
+  "cancelOutsideWorkRequest": "Cancel Outside Work Request",
+  "areYouSureCancelOutsideWork": "Are you sure you want to cancel the outside work request for {dates}?",
+  "outsideWorkRequestCancelled": "Outside work request cancelled",
+  "outsideWorkAutoApproved": "Approved automatically",
+  "outsideWorkSubmittedForApproval": "Submitted for approval",
+  "outsideWorkAllowedUntil": "Outside work allowed until {date}",
+  "requestOutsideWork": "Request outside work",
+  "endDateOptional": "End date (optional)",
+  "enterReasonForOutsideWork": "e.g. client visit, field work",
+  "outsideWorkHint": "While approved, you can clock in and out outside your branch location."
 }

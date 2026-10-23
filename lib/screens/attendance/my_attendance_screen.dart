@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/attendance_record.dart';
 import '../../models/attendance_screen_template.dart';
@@ -218,9 +219,51 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
     final errorWidget = statusState.error != null
         ? Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              statusState.error!,
-              style: const TextStyle(color: AppColors.danger, fontSize: 12),
+            child: statusState.isGeofenceBlocked
+                ? Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          statusState.error!,
+                          style: const TextStyle(color: AppColors.danger, fontSize: 12),
+                        ),
+                      ),
+                      TextButton.icon(
+                        onPressed: () => context.push('/outside-work/new'),
+                        icon: const Icon(Icons.directions_walk, size: 16),
+                        label: Text(l10n.requestOutsideWork, style: const TextStyle(fontSize: 12)),
+                      ),
+                    ],
+                  )
+                : Text(
+                    statusState.error!,
+                    style: const TextStyle(color: AppColors.danger, fontSize: 12),
+                  ),
+          )
+        : const SizedBox.shrink();
+    final permit = statusState.outsideWorkPermit;
+    final permitWidget = permit != null
+        ? Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: AppColors.success.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColors.success.withValues(alpha: 0.4)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.directions_walk, size: 18, color: AppColors.success),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      l10n.outsideWorkAllowedUntil(permit.endDateDisplay),
+                      style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
+                    ),
+                  ),
+                ],
+              ),
             ),
           )
         : const SizedBox.shrink();
@@ -282,6 +325,7 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
       case AttendanceScreenTemplate.sessions:
         blocks = [
           profileWidget,
+          permitWidget,
           SessionPunchList(
             record: record,
             sessions: sessions,
@@ -296,6 +340,7 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
       case AttendanceScreenTemplate.punchFirst:
         blocks = [
           profileWidget,
+          permitWidget,
           clockWidget,
           errorWidget,
           statusWidget,
@@ -307,6 +352,7 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
       case AttendanceScreenTemplate.classic:
         blocks = [
           profileWidget,
+          permitWidget,
           statusWidget,
           sessionWidget,
           clockWidget,

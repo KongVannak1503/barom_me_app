@@ -1,6 +1,7 @@
 import '../models/api_response.dart';
 import '../models/attendance_record.dart';
 import '../models/employee.dart';
+import '../models/outside_work_request.dart';
 import '../models/paginated_response.dart';
 import '../models/shift.dart';
 import '../services/barom_api.dart';
@@ -11,11 +12,15 @@ class AttendanceStatusResult {
   final List<Shift> availableShifts;
   final Shift? rosterShift;
 
+  /// Approved outside-work request covering today, if any.
+  final OutsideWorkRequest? outsideWorkPermit;
+
   const AttendanceStatusResult({
     required this.employee,
     this.todayAttendance,
     required this.availableShifts,
     this.rosterShift,
+    this.outsideWorkPermit,
   });
 }
 
@@ -38,6 +43,10 @@ class AttendanceRepository {
           [],
       rosterShift: data['roster_shift'] != null
           ? Shift.fromJson(data['roster_shift'] as Map<String, dynamic>)
+          : null,
+      outsideWorkPermit: data['outside_work_permit'] is Map<String, dynamic>
+          ? OutsideWorkRequest.fromJson(
+              data['outside_work_permit'] as Map<String, dynamic>)
           : null,
     );
   }

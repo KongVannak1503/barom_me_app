@@ -10,7 +10,8 @@ class AppShell extends StatelessWidget {
     final location = GoRouterState.of(context).matchedLocation;
     if (location.startsWith('/attendance')) return 0;
     if (location.startsWith('/leaves')) return 1;
-    if (location.startsWith('/settings')) return 2;
+    if (location.startsWith('/outside-work')) return 2;
+    if (location.startsWith('/settings')) return 3;
     return 0;
   }
 
@@ -25,12 +26,14 @@ class AppShell extends StatelessWidget {
           switch (index) {
             case 0: context.go('/attendance');
             case 1: context.go('/leaves');
-            case 2: context.go('/settings');
+            case 2: context.go('/outside-work');
+            case 3: context.go('/settings');
           }
         },
         destinations: [
           NavigationDestination(icon: const Icon(Icons.fingerprint), label: l10n.attendance),
           NavigationDestination(icon: const Icon(Icons.beach_access), label: l10n.leaves),
+          NavigationDestination(icon: const Icon(Icons.directions_walk), label: l10n.outsideWork),
           NavigationDestination(icon: const Icon(Icons.settings), label: l10n.settings),
         ],
       ),

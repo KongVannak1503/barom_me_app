@@ -133,5 +133,19 @@
   "adminRemark": "កំណត់សម្គាល់អ្នកគ្រប់គ្រង",
   "areYouSure": "តើអ្នកប្រាកដទេ?",
   "cancelThisRequest": "បោះបង់សំណើនេះ",
-  "leaveCancelled": "ច្បាប់ត្រូវបានបោះបង់"
+  "leaveCancelled": "ច្បាប់ត្រូវបានបោះបង់",
+  "outsideWork": "ការងារក្រៅ",
+  "myOutsideWork": "ការងារក្រៅរបស់ខ្ញុំ",
+  "newOutsideWorkRequest": "សំណើការងារក្រៅថ្មី",
+  "noOutsideWorkRequestsYet": "មិនទាន់មានសំណើការងារក្រៅនៅឡើយទេ",
+  "cancelOutsideWorkRequest": "បោះបង់សំណើការងារក្រៅ",
+  "areYouSureCancelOutsideWork": "តើអ្នកប្រាកដទេថាចង់បោះបង់សំណើការងារក្រៅសម្រាប់ {dates}?",
+  "outsideWorkRequestCancelled": "សំណើការងារក្រៅត្រូវបានបោះបង់",
+  "outsideWorkAutoApproved": "បានអនុម័តដោយស្វ័យប្រវត្តិ",
+  "outsideWorkSubmittedForApproval": "បានដាក់ស្នើសុំការអនុម័ត",
+  "outsideWorkAllowedUntil": "អនុញ្ញាតឱ្យធ្វើការនៅក្រៅរហូតដល់ {date}",
+  "requestOutsideWork": "ស្នើសុំធ្វើការនៅក្រៅ",
+  "endDateOptional": "ថ្ងៃបញ្ចប់ (ស្រេចចិត្ត)",
+  "enterReasonForOutsideWork": "ឧ. ជួបអតិថិជន ការងារនៅទីវាល",
+  "outsideWorkHint": "នៅពេលបានអនុម័ត អ្នកអាចចុះវត្តមានចូល និងចេញនៅក្រៅទីតាំងសាខាបាន។"
 }

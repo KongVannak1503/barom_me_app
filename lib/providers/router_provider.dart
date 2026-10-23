@@ -1,9 +1,12 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../constants/route_names.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/attendance/my_attendance_screen.dart';
 import '../screens/leaves/my_leaves_screen.dart';
+import '../screens/outside_work/create_outside_work_screen.dart';
+import '../screens/outside_work/my_outside_work_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/settings/telegram_connect_screen.dart';
 import '../screens/settings/set_pin_screen.dart';
@@ -43,6 +46,20 @@ final routerProvider = Provider<GoRouter>((ref) {
             pageBuilder: (_, __) => const NoTransitionPage(
               child: MyLeavesScreen(),
             ),
+          ),
+          GoRoute(
+            path: '/outside-work',
+            name: RouteNames.outsideWork,
+            pageBuilder: (_, __) => const NoTransitionPage(
+              child: MyOutsideWorkScreen(),
+            ),
+            routes: [
+              GoRoute(
+                path: 'new',
+                name: RouteNames.outsideWorkNew,
+                builder: (_, __) => const CreateOutsideWorkScreen(),
+              ),
+            ],
           ),
           GoRoute(
             path: '/settings',

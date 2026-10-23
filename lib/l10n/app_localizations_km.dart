@@ -428,4 +428,51 @@ class AppLocalizationsKm extends AppLocalizations {
 
   @override
   String get leaveCancelled => 'ច្បាប់ត្រូវបានបោះបង់';
+
+  @override
+  String get outsideWork => 'ការងារក្រៅ';
+
+  @override
+  String get myOutsideWork => 'ការងារក្រៅរបស់ខ្ញុំ';
+
+  @override
+  String get newOutsideWorkRequest => 'សំណើការងារក្រៅថ្មី';
+
+  @override
+  String get noOutsideWorkRequestsYet => 'មិនទាន់មានសំណើការងារក្រៅនៅឡើយទេ';
+
+  @override
+  String get cancelOutsideWorkRequest => 'បោះបង់សំណើការងារក្រៅ';
+
+  @override
+  String areYouSureCancelOutsideWork(Object dates) {
+    return 'តើអ្នកប្រាកដទេថាចង់បោះបង់សំណើការងារក្រៅសម្រាប់ $dates?';
+  }
+
+  @override
+  String get outsideWorkRequestCancelled => 'សំណើការងារក្រៅត្រូវបានបោះបង់';
+
+  @override
+  String get outsideWorkAutoApproved => 'បានអនុម័តដោយស្វ័យប្រវត្តិ';
+
+  @override
+  String get outsideWorkSubmittedForApproval => 'បានដាក់ស្នើសុំការអនុម័ត';
+
+  @override
+  String outsideWorkAllowedUntil(Object date) {
+    return 'អនុញ្ញាតឱ្យធ្វើការនៅក្រៅរហូតដល់ $date';
+  }
+
+  @override
+  String get requestOutsideWork => 'ស្នើសុំធ្វើការនៅក្រៅ';
+
+  @override
+  String get endDateOptional => 'ថ្ងៃបញ្ចប់ (ស្រេចចិត្ត)';
+
+  @override
+  String get enterReasonForOutsideWork => 'ឧ. ជួបអតិថិជន ការងារនៅទីវាល';
+
+  @override
+  String get outsideWorkHint =>
+      'នៅពេលបានអនុម័ត អ្នកអាចចុះវត្តមានចូល និងចេញនៅក្រៅទីតាំងសាខាបាន។';
 }

@@ -423,4 +423,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get leaveCancelled => 'Leave cancelled';
+
+  @override
+  String get outsideWork => 'Outside Work';
+
+  @override
+  String get myOutsideWork => 'My Outside Work';
+
+  @override
+  String get newOutsideWorkRequest => 'New Outside Work Request';
+
+  @override
+  String get noOutsideWorkRequestsYet => 'No outside work requests yet';
+
+  @override
+  String get cancelOutsideWorkRequest => 'Cancel Outside Work Request';
+
+  @override
+  String areYouSureCancelOutsideWork(Object dates) {
+    return 'Are you sure you want to cancel the outside work request for $dates?';
+  }
+
+  @override
+  String get outsideWorkRequestCancelled => 'Outside work request cancelled';
+
+  @override
+  String get outsideWorkAutoApproved => 'Approved automatically';
+
+  @override
+  String get outsideWorkSubmittedForApproval => 'Submitted for approval';
+
+  @override
+  String outsideWorkAllowedUntil(Object date) {
+    return 'Outside work allowed until $date';
+  }
+
+  @override
+  String get requestOutsideWork => 'Request outside work';
+
+  @override
+  String get endDateOptional => 'End date (optional)';
+
+  @override
+  String get enterReasonForOutsideWork => 'e.g. client visit, field work';
+
+  @override
+  String get outsideWorkHint =>
+      'While approved, you can clock in and out outside your branch location.';
 }

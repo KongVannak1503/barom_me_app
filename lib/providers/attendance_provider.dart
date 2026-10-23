@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/attendance_record.dart';
 import '../models/employee.dart';
+import '../models/outside_work_request.dart';
 import '../models/shift.dart';
 import '../repositories/attendance_repository.dart';
 import '../utils/date_formatter.dart';
@@ -21,6 +22,13 @@ class AttendanceStatusState {
   final bool isClockingIn;
   final Shift? rosterShift;
 
+  /// Approved outside-work request covering today (geofence bypass), if any.
+  final OutsideWorkRequest? outsideWorkPermit;
+
+  /// Machine-readable error code from the last failed punch, e.g.
+  /// [geofenceBlockedCode].
+  final String? errorCode;
+
   const AttendanceStatusState({
     this.isLoading = false,
     this.initialLoading = true,
@@ -29,9 +37,15 @@ class AttendanceStatusState {
     this.employee,
     this.isClockingIn = false,
     this.rosterShift,
+    this.outsideWorkPermit,
+    this.errorCode,
   });
 
+  static const geofenceBlockedCode = 'GEOFENCE_BLOCKED';
+
   Shift? get effectiveShift => todayRecord?.shift ?? rosterShift;
+
+  bool get isGeofenceBlocked => errorCode == geofenceBlockedCode;
 
   AttendanceStatusState copyWith({
     bool? isLoading,
@@ -41,6 +55,8 @@ class AttendanceStatusState {
     Employee? employee,
     bool? isClockingIn,
     Shift? rosterShift,
+    OutsideWorkRequest? outsideWorkPermit,
+    String? errorCode,
     bool clearError = false,
   }) {
     return AttendanceStatusState(
@@ -51,6 +67,8 @@ class AttendanceStatusState {
       employee: employee ?? this.employee,
       isClockingIn: isClockingIn ?? this.isClockingIn,
       rosterShift: rosterShift ?? this.rosterShift,
+      outsideWorkPermit: outsideWorkPermit ?? this.outsideWorkPermit,
+      errorCode: clearError ? null : errorCode ?? this.errorCode,
     );
   }
 }
@@ -72,7 +90,9 @@ class AttendanceStatusNotifier extends StateNotifier<AttendanceStatusState> {
           todayRecord: result.todayAttendance,
           employee: result.employee,
           rosterShift: result.rosterShift,
+          outsideWorkPermit: result.outsideWorkPermit,
           error: state.error,
+          errorCode: state.errorCode,
         );
         return;
       } catch (e) {
@@ -102,11 +122,24 @@ class AttendanceStatusNotifier extends StateNotifier<AttendanceStatusState> {
       state = state.copyWith(isClockingIn: false, todayRecord: result.data);
       await refresh();
     } catch (e) {
-      state = state.copyWith(isClockingIn: false, error: _message(e));
+      final message = _message(e);
+      final code = _errorCode(e);
+      state = state.copyWith(isClockingIn: false, error: message, errorCode: code);
       try {
         await refresh();
       } catch (_) {}
+      // refresh() clears the error before reloading; restore the punch error
+      // so the screen can show it (and the geofence action).
+      state = state.copyWith(error: message, errorCode: code);
     }
+  }
+
+  String? _errorCode(Object e) {
+    if (e is DioException) {
+      final data = e.response?.data;
+      if (data is Map && data['error'] is String) return data['error'] as String;
+    }
+    return null;
   }
 
   String _message(Object e) {
