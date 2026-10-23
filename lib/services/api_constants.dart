@@ -23,7 +23,7 @@ class ApiConstants {
       case ApiFlavor.dev:
         return 'http://$_devHost:8001/api/v1';
       case ApiFlavor.stage:
-        return 'https://staging-api.barom.me/api/v1';
+        return 'https://stage.barom.me/api/v1';
       case ApiFlavor.production:
         return 'https://barom.me/api/v1';
     }

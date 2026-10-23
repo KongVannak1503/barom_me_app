@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../models/employee.dart';
 import '../../themes/app_colors.dart';
+import '../../utils/location_helper.dart';
 
 class AttendanceMap extends StatefulWidget {
   final Branch? branch;
@@ -41,14 +42,7 @@ class _AttendanceMapState extends State<AttendanceMap> {
 
   Future<void> _initLocation() async {
     try {
-      final permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        if (mounted) setState(() => _loadingLocation = false);
-        return;
-      }
-      final pos = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
-      );
+      final pos = await LocationHelper.getCurrentPosition();
       if (mounted) {
         setState(() {
           _position = pos;

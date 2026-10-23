@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geolocator/geolocator.dart';
 import '../../l10n/app_localizations.dart';
+import '../../models/attendance_record.dart';
 import '../../models/attendance_screen_template.dart';
 import '../../providers/attendance_provider.dart';
 import '../../providers/attendance_template_provider.dart';
 import '../../themes/app_colors.dart';
 import '../../utils/date_formatter.dart';
+import '../../utils/location_helper.dart';
 import '../../utils/session_helper.dart';
 import '../../widgets/attendance/attendance_map.dart';
 import '../../widgets/attendance/clock_button.dart';
@@ -25,6 +26,8 @@ class MyAttendanceScreen extends ConsumerStatefulWidget {
 
 class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
   late AttendanceSession _selectedSession;
+  // Until the user taps a session tab, follow the session they should punch next.
+  bool _userPickedSession = false;
   bool _isSyncing = false;
   int _mapKey = 0;
   double? _freshLatitude;
@@ -50,9 +53,7 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
 
   Future<void> _refreshLocation() async {
     try {
-      final pos = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
-      );
+      final pos = await LocationHelper.getCurrentPosition();
       if (mounted) {
         setState(() {
           _freshLatitude = pos.latitude;
@@ -68,9 +69,7 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
     required bool isOut,
   }) async {
     try {
-      final pos = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
-      );
+      final pos = await LocationHelper.getCurrentPosition();
       if (!mounted) return;
 
       final punchType = SessionHelper.punchType(session, isOut: isOut);
@@ -82,6 +81,10 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
       if (mounted) {
         await ref.read(attendanceHistoryProvider.notifier).refresh();
       }
+    } on LocationException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -89,6 +92,22 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
         );
       }
     }
+  }
+
+  /// The session the employee most likely wants to punch now: one that is
+  /// clocked in but not out, otherwise the first one not started yet.
+  AttendanceSession _suggestedSession(List<AttendanceSession> sessions, AttendanceRecord? record) {
+    if (record == null) {
+      final detected = SessionHelper.detect(DateTime.now());
+      return sessions.contains(detected) ? detected : sessions.first;
+    }
+    for (final s in sessions) {
+      if (record.isSessionCheckedIn(s) && !record.isSessionCheckedOut(s)) return s;
+    }
+    for (final s in sessions) {
+      if (!record.isSessionCheckedIn(s)) return s;
+    }
+    return sessions.last;
   }
 
   Widget _buildDateFilter() {
@@ -156,8 +175,8 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
     }();
     final detectedSession = SessionHelper.detect(DateTime.now());
 
-    if (!sessions.contains(_selectedSession)) {
-      _selectedSession = sessions.contains(detectedSession) ? detectedSession : sessions.first;
+    if (!_userPickedSession || !sessions.contains(_selectedSession)) {
+      _selectedSession = _suggestedSession(sessions, record);
     }
 
     final isSessionIn = record?.isSessionCheckedIn(_selectedSession) ?? false;
@@ -174,7 +193,10 @@ class _MyAttendanceScreenState extends ConsumerState<MyAttendanceScreen> {
       detectedSession: detectedSession,
       record: record,
       sessions: sessions,
-      onChanged: (session) => setState(() => _selectedSession = session),
+      onChanged: (session) => setState(() {
+        _selectedSession = session;
+        _userPickedSession = true;
+      }),
     );
     final clockWidget = statusState.initialLoading
         ? const Padding(

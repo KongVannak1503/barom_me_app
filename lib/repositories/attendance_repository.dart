@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import '../models/api_response.dart';
 import '../models/attendance_record.dart';
 import '../models/employee.dart';
@@ -61,28 +60,17 @@ class AttendanceRepository {
     int? shiftId,
     String? punchType,
   }) async {
-    try {
-      final response = await _api.dio.post('/my-attendance/clock-in', data: {
-        'latitude': latitude,
-        'longitude': longitude,
-        if (shiftId != null) 'shift_id': shiftId,
-        if (punchType != null) 'punch_type': punchType,
-      });
-      final json = response.data as Map<String, dynamic>;
-      return ApiResponse.fromJson(
-        json,
-        (data) => AttendanceRecord.fromJson(data as Map<String, dynamic>),
-      );
-    } on DioException catch (e) {
-      final msg = _extractError(e);
-      throw Exception(msg);
-    }
-  }
-  String _extractError(DioException e) {
-    if (e.response?.data is Map) {
-      final data = e.response!.data as Map<String, dynamic>;
-      return (data['message'] ?? data['error'] ?? e.toString()) as String;
-    }
-    return e.toString();
+    // DioException propagates; AttendanceStatusNotifier turns it into a message.
+    final response = await _api.dio.post('/my-attendance/clock-in', data: {
+      'latitude': latitude,
+      'longitude': longitude,
+      if (shiftId != null) 'shift_id': shiftId,
+      if (punchType != null) 'punch_type': punchType,
+    });
+    final json = response.data as Map<String, dynamic>;
+    return ApiResponse.fromJson(
+      json,
+      (data) => AttendanceRecord.fromJson(data as Map<String, dynamic>),
+    );
   }
 }

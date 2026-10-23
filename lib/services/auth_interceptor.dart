@@ -1,16 +1,16 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'api_constants.dart';
 
 class AuthInterceptor extends Interceptor {
   final FlutterSecureStorage _storage;
-  final Dio Function() _createDio;
 
-  AuthInterceptor({
-    required FlutterSecureStorage storage,
-    required Dio Function() createDio,
-  })  : _storage = storage,
-        _createDio = createDio;
+  /// Bumped whenever the server rejects our token, so the router can
+  /// re-run its redirect and send the user back to the login screen.
+  static final ValueNotifier<int> sessionExpired = ValueNotifier(0);
+
+  AuthInterceptor({required FlutterSecureStorage storage}) : _storage = storage;
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
@@ -23,26 +23,13 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode == 401) {
-      final refreshToken = await _storage.read(key: ApiConstants.refreshTokenKey);
-      if (refreshToken != null) {
-        try {
-          final dio = _createDio();
-          final response = await dio.post(
-            '/auth/refresh',
-            data: {'refresh_token': refreshToken},
-          );
-          final newToken = response.data['access_token'] as String;
-          await _storage.write(key: ApiConstants.tokenKey, value: newToken);
-
-          final opts = err.requestOptions;
-          opts.headers['Authorization'] = 'Bearer $newToken';
-          final retryResponse = await dio.fetch(opts);
-          return handler.resolve(retryResponse);
-        } catch (_) {
-          await _storage.deleteAll();
-        }
-      }
+    // A 401 from /login just means wrong credentials, not an expired session.
+    final isLogin = err.requestOptions.path.endsWith('/login');
+    if (err.response?.statusCode == 401 && !isLogin) {
+      final hadToken = await _storage.read(key: ApiConstants.tokenKey) != null;
+      await _storage.delete(key: ApiConstants.tokenKey);
+      await _storage.delete(key: ApiConstants.refreshTokenKey);
+      if (hadToken) sessionExpired.value++;
     }
     handler.next(err);
   }

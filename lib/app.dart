@@ -9,6 +9,7 @@ import 'providers/session_provider.dart';
 import 'providers/theme_provider.dart';
 import 'providers/translations_provider.dart';
 import 'screens/lock/app_lock_screen.dart';
+import 'services/auth_interceptor.dart';
 import 'themes/app_theme.dart';
 
 class BaromMeApp extends ConsumerStatefulWidget {
@@ -25,7 +26,16 @@ class _BaromMeAppState extends ConsumerState<BaromMeApp> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       refreshSession(ref);
     });
+    AuthInterceptor.sessionExpired.addListener(_onSessionExpired);
   }
+
+  @override
+  void dispose() {
+    AuthInterceptor.sessionExpired.removeListener(_onSessionExpired);
+    super.dispose();
+  }
+
+  void _onSessionExpired() => setSession(ref, false);
 
   @override
   Widget build(BuildContext context) {

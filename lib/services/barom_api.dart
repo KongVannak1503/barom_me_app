@@ -27,10 +27,7 @@ class BaromApi {
         headers: {'Accept': 'application/json'},
       ),
     );
-    d.interceptors.add(AuthInterceptor(
-      storage: storage,
-      createDio: _createDio,
-    ));
+    d.interceptors.add(AuthInterceptor(storage: storage));
     return d;
   }
 }

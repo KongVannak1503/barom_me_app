@@ -9,12 +9,14 @@ import '../screens/settings/telegram_connect_screen.dart';
 import '../screens/settings/set_pin_screen.dart';
 import '../widgets/common/app_shell.dart';
 import '../services/api_constants.dart';
+import '../services/auth_interceptor.dart';
 
 final _storage = FlutterSecureStorage();
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/attendance',
+    refreshListenable: AuthInterceptor.sessionExpired,
     redirect: (context, state) async {
       final token = await _storage.read(key: ApiConstants.tokenKey);
       final isLoginRoute = state.matchedLocation == '/login';

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/attendance_record.dart';
@@ -64,19 +65,21 @@ class AttendanceStatusNotifier extends StateNotifier<AttendanceStatusState> {
     for (int attempt = 0; attempt < 2; attempt++) {
       try {
         final result = await _repo.getStatus();
-        state = state.copyWith(
-          isLoading: false,
+        // Build fresh state (not copyWith) so a missing record — e.g. a new
+        // day started while the app stayed open — clears yesterday's punches.
+        state = AttendanceStatusState(
           initialLoading: false,
           todayRecord: result.todayAttendance,
           employee: result.employee,
           rosterShift: result.rosterShift,
+          error: state.error,
         );
         return;
       } catch (e) {
         if (attempt == 0) {
           await Future.delayed(const Duration(seconds: 2));
         } else {
-          state = state.copyWith(isLoading: false, initialLoading: false, error: e.toString());
+          state = state.copyWith(isLoading: false, initialLoading: false, error: _message(e));
         }
       }
     }
@@ -99,11 +102,26 @@ class AttendanceStatusNotifier extends StateNotifier<AttendanceStatusState> {
       state = state.copyWith(isClockingIn: false, todayRecord: result.data);
       await refresh();
     } catch (e) {
-      state = state.copyWith(isClockingIn: false, error: e.toString());
+      state = state.copyWith(isClockingIn: false, error: _message(e));
       try {
         await refresh();
       } catch (_) {}
     }
+  }
+
+  String _message(Object e) {
+    if (e is DioException) {
+      final data = e.response?.data;
+      if (data is Map && (data['message'] ?? data['error']) is String) {
+        return (data['message'] ?? data['error']) as String;
+      }
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        return 'Cannot reach the server. Check your internet connection.';
+      }
+    }
+    return e.toString().replaceFirst('Exception: ', '');
   }
 }
 
